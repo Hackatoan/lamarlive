@@ -1,5 +1,7 @@
 # lamarlive
 
+> **🔗 Part of the Lamar project:** [Lamar](https://github.com/Hackatoan/Lamar) (Discord bot) · [lamar-web](https://github.com/Hackatoan/lamar-web) (landing site) · [lamarlive](https://github.com/Hackatoan/lamarlive) (/build gallery)
+
 The static shell + gallery for lamarlive.hackatoa.com — pages built by Lamar's Discord `/build` command.
 
 🔗 **Live:** [lamarlive.hackatoa.com](https://lamarlive.hackatoa.com)   ·   ☕ **Support:** [Buy Me a Coffee](https://buymeacoffee.com/hackatoa)
