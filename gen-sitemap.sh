@@ -6,15 +6,26 @@ ROOT=/opt/homelab/lamarlive
 BASE=https://lamarlive.hackatoa.com
 OUT="$ROOT/sitemap.xml"
 tmp=$(mktemp)
+
+xmlescape() {
+  local s="$1"
+  s="${s//&/&amp;}"
+  s="${s//</&lt;}"
+  s="${s//>/&gt;}"
+  s="${s//\"/&quot;}"
+  s="${s//\'/&apos;}"
+  echo "$s"
+}
+
 {
   echo '<?xml version="1.0" encoding="UTF-8"?>'
   echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
   echo "  <url><loc>$BASE/</loc><changefreq>daily</changefreq></url>"
   find "$ROOT/u" -mindepth 2 -maxdepth 2 -name index.html 2>/dev/null | sort | while read -r f; do
-    d=$(dirname "${f#$ROOT/}"); echo "  <url><loc>$BASE/$d/</loc></url>"
+    d=$(dirname "${f#$ROOT/}"); echo "  <url><loc>$BASE/$(xmlescape "$d")/</loc></url>"
   done
   find "$ROOT/u" -mindepth 3 -maxdepth 3 -name index.html 2>/dev/null | sort | while read -r f; do
-    d=$(dirname "${f#$ROOT/}"); echo "  <url><loc>$BASE/$d/</loc></url>"
+    d=$(dirname "${f#$ROOT/}"); echo "  <url><loc>$BASE/$(xmlescape "$d")/</loc></url>"
   done
   echo '</urlset>'
 } > "$tmp"
