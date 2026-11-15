@@ -8,6 +8,12 @@
 <main>
 <h1><span aria-hidden="true">🔍</span> 404</h1>
 <p>Nothing here. That build may have expired or the link is mistyped.</p>
+<p id="owner" hidden>This creator may have other builds: <a id="owner-link" href="/">see their builds</a>.</p>
 <p>Run <code>/build create</code> in Discord to make your own, or <a href="/">head back to lamarlive</a>.</p>
 </main>
+<script>
+// Dead /u/<id>/<slug>/ link? Offer the creator's build index (/u/<id>/) instead.
+(function(){var m=location.pathname.match(/^\/u\/(\d{5,25})\/[^\/]+/);if(!m)return;
+document.getElementById('owner-link').href='/u/'+m[1]+'/';document.getElementById('owner').hidden=false})();
+</script>
 </body></html>
