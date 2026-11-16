@@ -3,10 +3,49 @@
 <meta name="theme-color" content="#0d0d10">
 <meta name="color-scheme" content="dark">
 <title>lamarlive</title>
-<style>body{background:#0d0d10;color:#e6e6e6;font:16px/1.5 system-ui,sans-serif;max-width:640px;margin:12vh auto;padding:0 20px;text-align:center}code{background:#1c1c22;padding:2px 6px;border-radius:5px}</style>
+<style>body{background:#0d0d10;color:#e6e6e6;font:16px/1.5 system-ui,sans-serif;max-width:640px;margin:12vh auto;padding:0 20px;text-align:center}code{background:#1c1c22;padding:2px 6px;border-radius:5px}
+#find input{box-sizing:border-box;width:100%;margin-top:16px;padding:10px 12px;background:#17171d;color:#e6e6e6;border:1px solid #26262e;border-radius:10px;font:inherit}#find input:focus-visible{outline:2px solid #8ab4ff;outline-offset:2px;border-color:#8ab4ff}
+#results{list-style:none;padding:0;margin:12px 0 0;text-align:left}#results a{display:block;padding:8px 12px;border-radius:8px;color:#e6e6e6;text-decoration:none}#results a:hover,#results a:focus-visible{background:#17171d;outline:2px solid #8ab4ff;outline-offset:-2px}#status{color:#9a9aa5;font-size:.9rem;min-height:1.5em;margin:8px 0 0}</style>
 </head><body>
 <main>
 <h1><span aria-hidden="true">🛠️</span> lamarlive</h1>
 <p>Sites built by Lamar. Run <code>/build create</code> in Discord to make one — yours land at <code>/u/&lt;you&gt;/</code>.</p>
+<form id="find" role="search" hidden onsubmit="return false">
+<label for="q" style="position:absolute;left:-9999px">Search builds</label>
+<input id="q" type="search" placeholder="Search builds… (press / to focus)" autocomplete="off" spellcheck="false" aria-describedby="status">
+<p id="status" aria-live="polite"></p>
+<ul id="results"></ul>
+</form>
 </main>
+<script>
+// Search published builds by name. Reads the same-origin /sitemap.xml the host
+// already regenerates; nothing is listed until the visitor types a query.
+(function(){
+var form=document.getElementById('find'),q=document.getElementById('q'),
+    out=document.getElementById('results'),st=document.getElementById('status'),builds=[];
+fetch('/sitemap.xml').then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){
+  var locs=new DOMParser().parseFromString(t,'application/xml').getElementsByTagName('loc');
+  for(var i=0;i<locs.length;i++){var p;try{p=new URL(locs[i].textContent).pathname}catch(e){continue}
+    var m=p.match(/^\/u\/(\d{5,25})\/([^\/]+)\/$/);
+    var n;try{n=decodeURIComponent(m?m[2]:'')}catch(e){n=m[2]}
+    if(m)builds.push({href:p,name:n.replace(/-+/g,' ')})}
+  if(builds.length)form.hidden=false;
+}).catch(function(){});
+function render(){
+  var s=q.value.trim().toLowerCase();out.textContent='';
+  if(s.length<2){st.textContent='';return}
+  var hits=builds.filter(function(b){return b.name.toLowerCase().indexOf(s)>=0}).slice(0,20);
+  st.textContent=hits.length?hits.length+(hits.length===20?'+':'')+' match'+(hits.length===1?'':'es'):'No builds match.';
+  hits.forEach(function(b){var li=document.createElement('li'),a=document.createElement('a');
+    a.href=b.href;a.textContent=b.name;li.appendChild(a);out.appendChild(li)});
+}
+q.addEventListener('input',render);
+q.addEventListener('keydown',function(e){if(e.key==='Escape'){q.value='';render()}
+  else if(e.key==='ArrowDown'&&out.firstChild){e.preventDefault();out.firstChild.firstChild.focus()}});
+out.addEventListener('keydown',function(e){var li=e.target.parentNode;
+  if(e.key==='ArrowDown'&&li.nextSibling){e.preventDefault();li.nextSibling.firstChild.focus()}
+  else if(e.key==='ArrowUp'){e.preventDefault();(li.previousSibling?li.previousSibling.firstChild:q).focus()}});
+document.addEventListener('keydown',function(e){if(e.key==='/'&&!form.hidden&&document.activeElement!==q){e.preventDefault();q.focus()}});
+})();
+</script>
 </body></html>
