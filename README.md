@@ -10,6 +10,10 @@ The static shell + gallery for lamarlive.hackatoa.com — pages built by Lamar's
 
 Hosts the public gallery of pages generated on demand through Lamar's Discord `/build` command. The repo ships the static shell; the generated pages and sitemap live on the host and are served alongside it.
 
+## Features
+
+- Search published builds by name from the homepage (reads `/sitemap.xml`; press `/` to focus, arrow keys to move, Esc to clear)
+
 ## Tech Stack
 
 Static HTML · Shell · nginx · Docker
