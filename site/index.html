@@ -28,13 +28,13 @@ fetch('/sitemap.xml').then(function(r){if(!r.ok)throw 0;return r.text()}).then(f
   for(var i=0;i<locs.length;i++){var p;try{p=new URL(locs[i].textContent).pathname}catch(e){continue}
     var m=p.match(/^\/u\/(\d{5,25})\/([^\/]+)\/$/);
     var n;try{n=decodeURIComponent(m?m[2]:'')}catch(e){n=m[2]}
-    if(m)builds.push({href:p,name:n.replace(/-+/g,' ')})}
+    if(m){var d=n.replace(/-+/g,' ');builds.push({href:p,name:d,nameLower:d.toLowerCase()})}}
   if(builds.length)form.hidden=false;
 }).catch(function(){});
 function render(){
   var s=q.value.trim().toLowerCase();out.textContent='';
   if(s.length<2){st.textContent='';return}
-  var hits=builds.filter(function(b){return b.name.toLowerCase().indexOf(s)>=0}).slice(0,20);
+  var hits=builds.filter(function(b){return b.nameLower.indexOf(s)>=0}).slice(0,20);
   st.textContent=hits.length?hits.length+(hits.length===20?'+':'')+' match'+(hits.length===1?'':'es'):'No builds match.';
   hits.forEach(function(b){var li=document.createElement('li'),a=document.createElement('a');
     a.href=b.href;a.textContent=b.name;li.appendChild(a);out.appendChild(li)});
