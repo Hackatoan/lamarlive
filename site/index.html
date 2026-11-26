@@ -5,7 +5,8 @@
 <title>lamarlive</title>
 <style>body{background:#0d0d10;color:#e6e6e6;font:16px/1.5 system-ui,sans-serif;max-width:640px;margin:12vh auto;padding:0 20px;text-align:center}code{background:#1c1c22;padding:2px 6px;border-radius:5px}
 #find input{box-sizing:border-box;width:100%;margin-top:16px;padding:10px 12px;background:#17171d;color:#e6e6e6;border:1px solid #26262e;border-radius:10px;font:inherit}#find input:focus-visible{outline:2px solid #8ab4ff;outline-offset:2px;border-color:#8ab4ff}
-#results{list-style:none;padding:0;margin:12px 0 0;text-align:left}#results a{display:block;padding:8px 12px;border-radius:8px;color:#e6e6e6;text-decoration:none}#results a:hover,#results a:focus-visible{background:#17171d;outline:2px solid #8ab4ff;outline-offset:-2px}#status{color:#9a9aa5;font-size:.9rem;min-height:1.5em;margin:8px 0 0}</style>
+#results{list-style:none;padding:0;margin:12px 0 0;text-align:left}#results a{display:block;padding:8px 12px;border-radius:8px;color:#e6e6e6;text-decoration:none}#results a:hover,#results a:focus-visible{background:#17171d;outline:2px solid #8ab4ff;outline-offset:-2px}#status{color:#9a9aa5;font-size:.9rem;min-height:1.5em;margin:8px 0 0}
+#rand{color:#8ab4ff}#rand:hover{text-decoration:underline}#rand:focus-visible{outline:2px solid #8ab4ff;outline-offset:2px}</style>
 </head><body>
 <main>
 <h1><span aria-hidden="true">🛠️</span> lamarlive</h1>
@@ -14,6 +15,7 @@
 <label for="q" style="position:absolute;left:-9999px">Search builds</label>
 <input id="q" type="search" placeholder="Search builds… (press / to focus)" autocomplete="off" spellcheck="false" aria-describedby="status">
 <p id="status" aria-live="polite"></p>
+<p><a id="rand" href="/"><span aria-hidden="true">🎲</span> Surprise me — open a random build</a></p>
 <ul id="results"></ul>
 </form>
 </main>
@@ -29,8 +31,12 @@ fetch('/sitemap.xml').then(function(r){if(!r.ok)throw 0;return r.text()}).then(f
     var m=p.match(/^\/u\/(\d{5,25})\/([^\/]+)\/$/);
     var n;try{n=decodeURIComponent(m?m[2]:'')}catch(e){n=m[2]}
     if(m){var d=n.replace(/-+/g,' ');builds.push({href:p,name:d,nameLower:d.toLowerCase()})}}
-  if(builds.length)form.hidden=false;
+  if(builds.length){form.hidden=false;roll()}
 }).catch(function(){});
+// "Surprise me": re-pick on every activation so repeat clicks/middle-clicks differ.
+var rand=document.getElementById('rand');
+function roll(){rand.href=builds[Math.floor(Math.random()*builds.length)].href}
+rand.addEventListener('click',roll);rand.addEventListener('auxclick',roll);
 function render(){
   var s=q.value.trim().toLowerCase();out.textContent='';
   if(s.length<2){st.textContent='';return}
