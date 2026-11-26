@@ -13,6 +13,7 @@ Hosts the public gallery of pages generated on demand through Lamar's Discord `/
 ## Features
 
 - Search published builds by name from the homepage (reads `/sitemap.xml`; press `/` to focus, arrow keys to move, Esc to clear)
+- "Surprise me" link on the homepage opens a random published build
 
 ## Tech Stack
 
